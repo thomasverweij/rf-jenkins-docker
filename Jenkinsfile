@@ -1,0 +1,30 @@
+pipeline {
+    agent { dockerfile true }
+
+    stages {
+        // stage('Install Dependencies') {
+        //     steps {
+        //         sh 'pip install --upgrade pip && pip install robotframework'
+        //     }
+        // }
+
+        stage('Run Robot Framework Tests') {
+            steps {
+                sh 'robot --outputdir results test.robot'
+            }
+        }
+
+        stage('Archive Results') {
+            steps {
+                archiveArtifacts artifacts: 'results/*', allowEmptyArchive: true
+                robot outputPath: 'results'
+            }
+        }
+    }
+
+    post {
+        always {
+            junit 'results/output.xml'
+        }
+    }
+}
