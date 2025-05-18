@@ -10,7 +10,10 @@ pipeline {
 
         stage('Run Robot Framework Tests') {
             steps {
-                sh 'robot --outputdir results test.robot'
+                sh '''
+                    export PATH="/home/pwuser/.venv/bin:$PATH"
+                    robot --outputdir results test.robot
+                '''
             }
         }
 
