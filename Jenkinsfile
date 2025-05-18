@@ -6,11 +6,14 @@ pipeline {
     }
 
     stages {
-        // stage('Install Dependencies') {
-        //     steps {
-        //         sh 'pip install --upgrade pip && pip install robotframework'
-        //     }
-        // }
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                echo $PATH
+                pip install -r requirements.txt
+                '''
+            }
+        }
 
         stage('Run Robot Framework Tests') {
             steps {
