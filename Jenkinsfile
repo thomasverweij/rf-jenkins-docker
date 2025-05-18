@@ -1,5 +1,8 @@
 pipeline {
-    agent { dockerfile true }
+    agent { 
+        dockerfile true 
+        args '--user pwuser'
+    }
 
     stages {
         // stage('Install Dependencies') {

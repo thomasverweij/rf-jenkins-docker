@@ -35,7 +35,3 @@ RUN uv pip install --no-cache-dir --upgrade robotframework robotframework-browse
 
 # Initialize Browser library without browsers binaries
 RUN python3 -m Browser.entry init --skip-browsers
-
-# Update permissions for Jenkins
-USER root
-RUN chmod -R a+rx /home/pwuser/.venv
