@@ -1,3 +1,8 @@
+*** Settings ***
+Libray  Browser
+
+
 *** Test Cases ***
 Test 1
-    Log  Hello, World!
+    Open Browser  https://example.com
+    Take Screenshot

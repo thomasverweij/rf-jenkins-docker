@@ -24,7 +24,6 @@ pipeline {
         stage('Archive Results') {
             steps {
                 archiveArtifacts artifacts: 'results/*', allowEmptyArchive: true
-                robot outputPath: 'results'
             }
         }
     }
