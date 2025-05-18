@@ -19,9 +19,3 @@ RUN pip3 install --no-cache-dir --upgrade pip wheel uv && \
 
 # Initialize Browser library without downloading browser binaries
 RUN python3 -m Browser.entry init --skip-browsers
-
-# Set non-root user (optional, safe for Playwright use)
-USER pwuser
-
-# Set default working directory
-WORKDIR /home/pwuser/app
