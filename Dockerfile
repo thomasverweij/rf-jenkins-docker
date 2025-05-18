@@ -1,21 +1,41 @@
 FROM mcr.microsoft.com/playwright:v1.52.0-noble
 
-# Use root for package installs
+# Update apt-get
 USER root
+RUN apt-get update
+RUN python3 --version
+RUN apt install -y python3-pip python3.12-venv
 
-# Update apt and install Python tools
-RUN apt-get update && \
-    apt-get install -y python3-pip python3.12-venv && \
-    apt-get clean && \
+# Clean up
+USER root
+RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Set environment variables
-ENV PATH="/usr/local/bin:$PATH"
+ENV PATH="/home/pwuser/.local/bin:${PATH}"
 ENV NODE_PATH=/usr/lib/node_modules
 
-# Install pip dependencies globally
-RUN pip3 install --no-cache-dir --upgrade pip wheel uv && \
-    uv pip install --no-cache-dir --upgrade robotframework robotframework-browser==19.5.1
+# Cache operations
+USER root
+RUN mv /root/.cache/ /home/pwuser/.cache || true
+RUN chmod a+rwx -R /home/pwuser/.cache || true
 
-# Initialize Browser library without downloading browser binaries
+# Switch to pwuser for the remaining operations
+USER pwuser
+
+# Create venv and active it
+RUN python3 -m venv /home/pwuser/.venv
+ENV PATH="/home/pwuser/.venv/bin:$PATH"
+
+# Upgrade pip and wheel for the user
+RUN pip3 install --no-cache-dir --upgrade pip wheel uv
+
+# Install RobotFramework and Browser library
+RUN uv pip install --no-cache-dir --upgrade robotframework robotframework-browser==19.5.1
+
+# Initialize Browser library without browsers binaries
 RUN python3 -m Browser.entry init --skip-browsers
+
+# Update permissions for Jenkins
+USER root
+RUN chmod -R a+rx /home/pwuser/.venv
