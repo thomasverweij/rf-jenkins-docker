@@ -4,5 +4,5 @@ Library  Browser
 
 *** Test Cases ***
 Test 1
-    Open Browser  https://example.com
+    Open Browser  url=https://example.com   headless=True  
     Take Screenshot
