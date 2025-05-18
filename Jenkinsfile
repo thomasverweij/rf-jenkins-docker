@@ -15,8 +15,7 @@ pipeline {
         stage('Run Robot Framework Tests') {
             steps {
                 sh '''
-                    export PATH="/home/pwuser/.venv/bin:$PATH"
-                    robot --outputdir results test.robot
+                    robot --outputdir results --xunit xunit.xml test.robot
                 '''
             }
         }
