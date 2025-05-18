@@ -1,7 +1,8 @@
 pipeline {
     agent { 
-        dockerfile true 
-        args '--user pwuser'
+        dockerfile { 
+            args '-u pwuser:sudo'
+        }
     }
 
     stages {
