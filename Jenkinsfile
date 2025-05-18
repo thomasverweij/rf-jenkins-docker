@@ -29,7 +29,7 @@ pipeline {
 
     post {
         always {
-            junit 'results/output.xml'
+            junit 'results/xunit.xml'
         }
     }
 }
