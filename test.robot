@@ -1,5 +1,5 @@
 *** Settings ***
-Libray  Browser
+Library  Browser
 
 
 *** Test Cases ***
