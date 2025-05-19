@@ -9,9 +9,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                echo $PATH
-                ls -al
                 pip install -r requirements.txt
+                pip list 
                 '''
             }
         }
@@ -19,7 +18,6 @@ pipeline {
         stage('Run Robot Framework Tests') {
             steps {
                 sh '''
-
                     robot --outputdir results --xunit xunit.xml test.robot
                 '''
             }
