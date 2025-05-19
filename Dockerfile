@@ -26,6 +26,6 @@ RUN python3 -m venv $VIRTUAL_ENV \
 RUN if pip show robotframework-browser > /dev/null 2>&1; then rfbrowser init --with-deps; fi
 
 RUN chown -R robot:robot /home/robot
-
 USER robot
+
 CMD ["bash"]
