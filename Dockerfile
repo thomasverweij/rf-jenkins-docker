@@ -1,37 +1,44 @@
-FROM mcr.microsoft.com/playwright:v1.52.0-noble
+FROM python:3.13-slim
 
-# Update apt-get
-USER root
-RUN apt-get update
-RUN python3 --version
-RUN apt install -y python3-pip python3.12-venv
+# Metadata
+LABEL maintainer="Thomas Verweij <your.email@example.com>"
 
-# Clean up
-USER root
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Environment variables
+ENV VIRTUAL_ENV=/home/robot/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
-# Set environment variables
-ENV PATH="/home/pwuser/.local/bin:${PATH}"
-ENV NODE_PATH=/usr/lib/node_modules
+# Create a non-root user
+RUN useradd -ms /bin/bash robot
 
-# Cache operations
-USER root
-RUN mv /root/.cache/ /home/pwuser/.cache || true
-RUN chmod a+rwx -R /home/pwuser/.cache || true
+# Install system dependencies and Node.js 22 (LTS)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    gnupg \
+    build-essential \
+    libnss3 \
+    libxss1 \
+    libdrm2 \
+    libgbm1 \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g npm \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Switch to pwuser for the remaining operations
-USER pwuser
+# Switch to non-root user
+USER robot
+WORKDIR /home/robot
 
-# Create venv and active it
-RUN python3 -m venv /home/pwuser/.venv
-ENV PATH="/home/pwuser/.venv/bin:$PATH"
+# Copy requirements.txt
+COPY --chown=robot:robot requirements.txt .
 
-# Upgrade pip and wheel for the user
-RUN pip3 install --no-cache-dir --upgrade pip wheel uv
+# Create virtual environment and install dependencies
+RUN python3 -m venv $VIRTUAL_ENV \
+    && pip install --upgrade pip \
+    && pip install -r requirements.txt
 
-# Install RobotFramework and Browser library
-RUN uv pip install --no-cache-dir --upgrade robotframework robotframework-browser==19.5.1
+# Initialize robotframework-browser (if present in requirements.txt)
+RUN if pip show robotframework-browser > /dev/null 2>&1; then rfbrowser init; fi
 
-# Initialize Browser library without browsers binaries
-RUN python3 -m Browser.entry init --skip-browsers
+# Set default command
+CMD ["bash"]
