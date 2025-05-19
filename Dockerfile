@@ -15,10 +15,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     gnupg \
     build-essential \
-    libnss3 \
-    libxss1 \
-    libdrm2 \
-    libgbm1 \
     && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && npm install -g npm \
@@ -38,7 +34,7 @@ RUN python3 -m venv $VIRTUAL_ENV \
     && pip install -r requirements.txt
 
 # Initialize robotframework-browser (if present in requirements.txt)
-RUN if pip show robotframework-browser > /dev/null 2>&1; then rfbrowser init; fi
+RUN if pip show robotframework-browser > /dev/null 2>&1; then rfbrowser init --with-deps; fi
 
 # Set default command
 CMD ["bash"]
