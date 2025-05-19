@@ -1,7 +1,7 @@
 pipeline {
     agent { 
         dockerfile { 
-            args '-u pwuser:sudo'
+            args '--user robot'
         }
     }
 
